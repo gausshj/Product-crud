@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "神秘的黑色0.5mm签字笔",
+      "price": 1.5
+    },
+    {
+      "id": 2,
+      "name": "ThinkPad X1 nano",
+      "price": 12000
+    },
+    {
+      "id": 3,
+      "name": "华为mate50 pro",
+      "price": 6499
+    },
+    {
+      "id": 4,
+      "name": "尼康Z9",
+      "price": 43999
+    },
+    {
+      "name": "信号与系统绝密资料",
+      "price": 200,
+      "id": 5
+    },
+    {
+      "name": "2023考研绝密资料",
+      "price": "300",
+      "id": 6
+    },
+    {
+      "name": "",
+      "price": null,
+      "id": 7
+    }
+  ]
+}
