@@ -102,79 +102,95 @@
         }
         }
         </code></pre>
-        <p>在这里定义了增删改查的实现函数，通过showMessage函数在网页右上角显示操作信息。如果连接json-server服务器失败，则会调用errorHandler函数在右上角显示&quot;出错了~!&quot;。</p>
+        <p>在这里定义了增删改查的实现函数，通过showMessage函数在网页右上角显示操作信息。如果连接json-server服务器失败，则会调用errorHandler函数在右上角显示&quot;出错了~!&quot;。
+        </p>
         <h2 id='25-商品信息增删改查'>2.5 商品信息增删改查</h2>
         <h3 id='251-信息显示'>2.5.1 信息显示</h3>
         <p>在终端输入下面的命令，下面其他组件同理</p>
         <pre><code class='language-shell' lang='shell'>ng generate component components/product/product-read
         </code></pre>
         <p>在创建的ts文件中需要导入上面设计的商品数据结构，即model和service文件，然后创建productService的类，调用其中的read函数，实产品信息的显示。ts文件如下：</p>
-        <pre><code class='language-typescript' lang='typescript'>import &#123; ProductService } from &#39;./../product.service&#39;;
-        import &#123; Product } from &#39;./../product.model&#39;;
-        import &#123; Component, OnInit } from &#39;@angular/core&#39;;
+<pre><code class='language-typescript' lang='typescript'>
+import &#123; ProductService } from &#39;./../product.service&#39;;
+import &#123; Product } from &#39;./../product.model&#39;;
+import &#123; AfterViewInit, Component, OnInit, ViewChild } from &#39;@angular/core&#39;;
+import &#123; MatPaginator } from &#39;@angular/material/paginator&#39;;
+import &#123; MatTableDataSource } from &#39;@angular/material/table&#39;;
 
-        @Component(&#123;
-        selector: &#39;app-product-read&#39;,
-        templateUrl: &#39;./product-read.component.html&#39;,
-        styleUrls: [&#39;./product-read.component.css&#39;]
-        })
-        export class ProductReadComponent implements OnInit &#123;
+@Component(&#123;
+  selector: &#39;app-product-read&#39;,
+  templateUrl: &#39;./product-read.component.html&#39;,
+  styleUrls: [&#39;./product-read.component.css&#39;]
+})
+export class ProductReadComponent implements OnInit &#123;
 
-        products!: Product[]
-        displayedColumns = [&#39;id&#39;, &#39;name&#39;, &#39;price&#39;, &#39;action&#39;]
-        
-        constructor(private productService: ProductService) &#123; }
+  products!: Product[]
+  displayedColumns = [&#39;id&#39;, &#39;name&#39;, &#39;price&#39;, &#39;action&#39;]
+  
+  constructor(private productService: ProductService) &#123; }
 
-        ngOnInit(): void &#123;
-            this.productService.read().subscribe(products =&gt; &#123;
-            this.products = products
-            })
-        }
-        }
-        </code></pre>
-        <p>在html文件中使用了Angular的material库中组件，具体可以参考material的官网：<a href='https://material.angular.cn/'>首页 - Angular Material
-                组件库</a></p>
+  dataSource = new MatTableDataSource&lt;Product&gt;();
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngOnInit(): void &#123;
+    this.productService.read().subscribe(products =&gt; &#123;
+      this.products = products;
+      this.dataSource.data = products;
+      this.dataSource.paginator = this.paginator;
+    })
+  } 
+}
+</code></pre>
+        <p>在html文件中使用了Angular的material库中组件，具体可以参考material的官网：<a href='https://material.angular.cn/'>首页 - Angular Material 组件库</a></p>
         <p>在表格的最右边是操作栏，包括编辑和删除，这里使用了material的图标库，html文件信息如下：</p>
-        <pre><code class='language-html' lang='html'>&lt;div class=&quot;mat-elevation-z4&quot;&gt;
-        &lt;table mat-table [dataSource]=&quot;products&quot;&gt;
-            &lt;!-- Id Column --&gt;
-            &lt;ng-container matColumnDef=&quot;id&quot;&gt;
-            &lt;th mat-header-cell *matHeaderCellDef&gt;ID&lt;/th&gt;
-            &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123;row.id}}&lt;/td&gt;
-            &lt;/ng-container&gt;
-
-            &lt;!-- Name Column --&gt;
-            &lt;ng-container matColumnDef=&quot;name&quot;&gt;
-            &lt;th mat-header-cell *matHeaderCellDef&gt;商品名称&lt;/th&gt;
-            &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123;row.name}}&lt;/td&gt;
-            &lt;/ng-container&gt;
-
-            &lt;!-- Price Column --&gt;
-            &lt;ng-container matColumnDef=&quot;price&quot;&gt;
-            &lt;th mat-header-cell *matHeaderCellDef&gt;价格&lt;/th&gt;
-            &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123; row.price | currency: &#39;CNY&#39; }}&lt;/td&gt;
-            &lt;/ng-container&gt;
-
-            &lt;!-- Action Column --&gt;
-            &lt;ng-container matColumnDef=&quot;action&quot;&gt;
-            &lt;th mat-header-cell *matHeaderCellDef&gt;操作&lt;/th&gt;
-            &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;
-                &lt;a routerLink=&quot;/products/update/&#123; &#123; row.id }}&quot; class=&quot;edit&quot;&gt;
-                    &lt;i class=&quot;material-icons&quot;&gt;
-                        edit
-                    &lt;/i&gt;
-                &lt;/a&gt;
-                &lt;a routerLink=&quot;/products/delete/&#123; &#123; row.id }}&quot; class=&quot;delete&quot;&gt;
-                    &lt;i class=&quot;material-icons&quot;&gt;
-                        delete
-                    &lt;/i&gt;
-                &lt;/a&gt;
-            &lt;/td&gt;
-            &lt;/ng-container&gt;
-
-            &lt;tr mat-header-row *matHeaderRowDef=&quot;displayedColumns&quot;&gt;&lt;/tr&gt;
-            &lt;tr mat-row *matRowDef=&quot;let row; columns: displayedColumns;&quot;&gt;&lt;/tr&gt;
-        &lt;/table&gt;
+        <pre><code class='language-html' lang='html'>&lt;div class=&quot;mat-elevation-z8&quot;&gt;
+            &lt;table mat-table [dataSource]=&quot;dataSource&quot;&gt;
+              &lt;!-- Id Column --&gt;
+              &lt;ng-container matColumnDef=&quot;id&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;ID&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123;row.id}}&lt;/td&gt;
+              &lt;/ng-container&gt;
+          
+              &lt;!-- Name Column --&gt;
+              &lt;ng-container matColumnDef=&quot;name&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;商品名称&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123;row.name}}&lt;/td&gt;
+              &lt;/ng-container&gt;
+          
+              &lt;!-- Price Column --&gt;
+              &lt;ng-container matColumnDef=&quot;price&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;价格&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123; row.price | currency: &#39;CNY&#39; }}&lt;/td&gt;
+              &lt;/ng-container&gt;
+          
+              &lt;!-- Action Column --&gt;
+              &lt;ng-container matColumnDef=&quot;action&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;操作&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;
+                    &lt;a routerLink=&quot;/products/update/&#123; &#123; row.id }}&quot; class=&quot;edit&quot;&gt;
+                        &lt;i class=&quot;material-icons&quot;&gt;
+                            edit
+                        &lt;/i&gt;
+                    &lt;/a&gt;
+                    &lt;a routerLink=&quot;/products/delete/&#123; &#123; row.id }}&quot; class=&quot;delete&quot;&gt;
+                        &lt;i class=&quot;material-icons&quot;&gt;
+                            delete
+                        &lt;/i&gt;
+                    &lt;/a&gt;
+                &lt;/td&gt;
+              &lt;/ng-container&gt;
+        
+              &lt;!-- &lt;tr mat-header-row *matHeaderRowDef=&quot;displayedColumns&quot;&gt;&lt;/tr&gt;
+              &lt;tr mat-row *matRowDef=&quot;let row; columns: displayedColumns;&quot;&gt;&lt;/tr&gt;
+            &lt;/table&gt; --&gt;
+              &lt;tr mat-header-row *matHeaderRowDef=&quot;displayedColumns&quot;&gt;&lt;/tr&gt;
+              &lt;tr mat-row *matRowDef=&quot;let row; columns: displayedColumns;&quot;&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+        
+            &lt;mat-paginator [pageSizeOptions]=&quot;[5, 10, 15]&quot;
+                        showFirstLastButtons 
+                        aria-label=&quot;Select page of periodic elements&quot;&gt;
+            &lt;/mat-paginator&gt;
         &lt;/div&gt;
         </code></pre>
         <p>在css样式表中定义了表格大小及图标大小</p>
