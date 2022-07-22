@@ -1,0 +1,337 @@
+<mat-card class="mat-elevation-z3">
+    <mat-card-title class="title" style="text-align: center;">
+        通信软件开发与应用
+    </mat-card-title>
+    <mat-card-content>
+        <h1 id='一项目简介'>一、项目简介</h1>
+        <p>本项目采用Angular CLI 14.01开发。使用了node.js中的json server作为服务器，提供数据库的服务。使用了Angular官方的Material组件库，美化网页UI界面和提高交互体验。</p>
+        <h1 id='二开发流程'>二、开发流程</h1>
+        <h2 id='21-创建工程'>2.1 创建工程</h2>
+        <p>在安装好Angular CLI后，在终端输入命令</p>
+        <pre><code class='language-shell' lang='shell'>npm install -g @angular/cli
+        </code></pre>
+        <p>然后创建项目工程，运行<code>CLI</code>命令<code>ng new</code>，本项目名为Product-crud，所以输入下面的命令：</p>
+        <pre><code class='language-shell' lang='shell'>ng new Product-crud
+        </code></pre>
+        <p>本项目使用了Angular官方提供的material库，所以需要为项目添加material库的组件，在终端输入下面的命令：</p>
+        <pre><code class='language-shell' lang='shell'>ng add @angular/material
+        </code></pre>
+        <p>终端提示是否安装和执行该包，输入<code>Y</code></p>
+        <p>然后选择样式：</p>
+        <p>然后选择是否将主题设置为全局样式，最后选择是否需要包括Angular的动画。</p>
+        <h2 id='22-项目目录设置'>2.2 项目目录设置</h2>
+        <p>本项目主要分为两个部门，一是网站框架，二是商品信息增删改查的路由。首先介绍组件部分，在<code>src\app</code>目录下设置文件夹<code>components</code>，来存储相关组件。然后在该目录下设置<code>product</code>和<code>template</code>文件夹。在<code>product</code>文件夹中，设置对应增删改查CRUD的四个文件夹，命名为<code>product-create</code>、<code>product-delete</code>、<code>product-read</code>、<code>product-update</code>。在<code>template</code>文件夹中设置<code>footer</code>、<code>header</code>、<code>nav</code>对应网页底部、网页头部和导航栏。在<code>src/app</code>目录下设置<code>view</code>文件夹，包括三个窗口，分别为主窗口、增删改查窗口和项目开发报告。
+        </p>
+        <h2 id='23-主窗口设置'>2.3 主窗口设置</h2>
+        <p>这里主要介绍商品信息增删改查页面，在页面左上角，使用material组件库的样式，点击可以跳转到新建商品信息的路由，在按钮下方，用<code>&lt;app-product-read&gt;</code>组件显示读取的商品表格信息等。
+        </p>
+        <h2 id='24-商品数据结构'>2.4 商品数据结构</h2>
+        <p>在<code>src/app/components/product</code>目录下创建<code>product.model.ts</code>文件，定义商品信息的类</p>
+        <pre><code class='language-typescript' lang='typescript'>export interface Product &#123;
+            id?: number
+            name: string
+            price?: number 
+        }
+        </code></pre>
+        <p>在该目录下创建<code>product.service.ts</code>文件，处理json-server提供的数据服务器的基本操作</p>
+        <pre><code class='language-typescript' lang='typescript'>import &#123; Injectable } from &quot;@angular/core&quot;;
+        import &#123; MatSnackBar } from &quot;@angular/material/snack-bar&quot;;
+        import &#123; HttpClient } from &quot;@angular/common/http&quot;;
+        import &#123; Product } from &quot;./product.model&quot;;
+        import &#123; Observable, EMPTY } from &quot;rxjs&quot;;
+        import &#123; map, catchError } from &quot;rxjs/operators&quot;;
+
+        @Injectable(&#123;
+        providedIn: &quot;root&quot;,
+        })
+        export class ProductService &#123;
+        baseUrl = &quot;http://localhost:3000/products&quot;;
+
+        constructor(private snackBar: MatSnackBar, private http: HttpClient) &#123;}
+
+        showMessage(msg: string, isError: boolean = false): void &#123;
+            this.snackBar.open(msg, &quot;X&quot;, &#123;
+            duration: 3000,
+            horizontalPosition: &quot;right&quot;,
+            verticalPosition: &quot;top&quot;,
+            panelClass: isError ? [&quot;msg-error&quot;] : [&quot;msg-success&quot;],
+            });
+        }
+
+        create(product: Product): Observable&lt;Product&gt; &#123;
+            return this.http.post&lt;Product&gt;(this.baseUrl, product).pipe(
+            map((obj) =&gt; obj),
+            catchError((e) =&gt; this.errorHandler(e))
+            );
+        }
+
+        read(): Observable&lt;Product[]&gt; &#123;
+            return this.http.get&lt;Product[]&gt;(this.baseUrl).pipe(
+            map((obj) =&gt; obj),
+            catchError((e) =&gt; this.errorHandler(e))
+            );
+        }
+
+        readById(id: number): Observable&lt;Product&gt; &#123;
+            const url = `$&#123;this.baseUrl}/$&#123;id}`;
+            return this.http.get&lt;Product&gt;(url).pipe(
+            map((obj) =&gt; obj),
+            catchError((e) =&gt; this.errorHandler(e))
+            );
+        }
+
+        update(product: Product): Observable&lt;Product&gt; &#123;
+            const url = `$&#123;this.baseUrl}/$&#123;product.id}`;
+            return this.http.put&lt;Product&gt;(url, product).pipe(
+            map((obj) =&gt; obj),
+            catchError((e) =&gt; this.errorHandler(e))
+            );
+        }
+
+        delete(id: number): Observable&lt;Product&gt; &#123;
+            const url = `$&#123;this.baseUrl}/$&#123;id}`;
+            return this.http.delete&lt;Product&gt;(url).pipe(
+            map((obj) =&gt; obj),
+            catchError((e) =&gt; this.errorHandler(e))
+            );
+        }
+
+        errorHandler(e: any): Observable&lt;any&gt; &#123;
+            this.showMessage(&quot;出错了~!&quot;, true);
+            return EMPTY;
+        }
+        }
+        </code></pre>
+        <p>在这里定义了增删改查的实现函数，通过showMessage函数在网页右上角显示操作信息。如果连接json-server服务器失败，则会调用errorHandler函数在右上角显示&quot;出错了~!&quot;。
+        </p>
+        <h2 id='25-商品信息增删改查'>2.5 商品信息增删改查</h2>
+        <h3 id='251-信息显示'>2.5.1 信息显示</h3>
+        <p>在终端输入下面的命令，下面其他组件同理</p>
+        <pre><code class='language-shell' lang='shell'>ng generate component components/product/product-read
+        </code></pre>
+        <p>在创建的ts文件中需要导入上面设计的商品数据结构，即model和service文件，然后创建productService的类，调用其中的read函数，实产品信息的显示。ts文件如下：</p>
+<pre><code class='language-typescript' lang='typescript'>
+import &#123; ProductService } from &#39;./../product.service&#39;;
+import &#123; Product } from &#39;./../product.model&#39;;
+import &#123; AfterViewInit, Component, OnInit, ViewChild } from &#39;@angular/core&#39;;
+import &#123; MatPaginator } from &#39;@angular/material/paginator&#39;;
+import &#123; MatTableDataSource } from &#39;@angular/material/table&#39;;
+
+@Component(&#123;
+  selector: &#39;app-product-read&#39;,
+  templateUrl: &#39;./product-read.component.html&#39;,
+  styleUrls: [&#39;./product-read.component.css&#39;]
+})
+export class ProductReadComponent implements OnInit &#123;
+
+  products!: Product[]
+  displayedColumns = [&#39;id&#39;, &#39;name&#39;, &#39;price&#39;, &#39;action&#39;]
+  
+  constructor(private productService: ProductService) &#123; }
+
+  dataSource = new MatTableDataSource&lt;Product&gt;();
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngOnInit(): void &#123;
+    this.productService.read().subscribe(products =&gt; &#123;
+      this.products = products;
+      this.dataSource.data = products;
+      this.dataSource.paginator = this.paginator;
+    })
+  } 
+}
+</code></pre>
+        <p>在html文件中使用了Angular的material库中组件，具体可以参考material的官网：<a href='https://material.angular.cn/'>首页 - Angular Material 组件库</a></p>
+        <p>在表格的最右边是操作栏，包括编辑和删除，这里使用了material的图标库，html文件信息如下：</p>
+        <pre><code class='language-html' lang='html'>&lt;div class=&quot;mat-elevation-z8&quot;&gt;
+            &lt;table mat-table [dataSource]=&quot;dataSource&quot;&gt;
+              &lt;!-- Id Column --&gt;
+              &lt;ng-container matColumnDef=&quot;id&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;ID&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123;row.id}}&lt;/td&gt;
+              &lt;/ng-container&gt;
+          
+              &lt;!-- Name Column --&gt;
+              &lt;ng-container matColumnDef=&quot;name&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;商品名称&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123;row.name}}&lt;/td&gt;
+              &lt;/ng-container&gt;
+          
+              &lt;!-- Price Column --&gt;
+              &lt;ng-container matColumnDef=&quot;price&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;价格&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;&#123; &#123; row.price | currency: &#39;CNY&#39; }}&lt;/td&gt;
+              &lt;/ng-container&gt;
+          
+              &lt;!-- Action Column --&gt;
+              &lt;ng-container matColumnDef=&quot;action&quot;&gt;
+                &lt;th mat-header-cell *matHeaderCellDef&gt;操作&lt;/th&gt;
+                &lt;td mat-cell *matCellDef=&quot;let row&quot;&gt;
+                    &lt;a routerLink=&quot;/products/update/&#123; &#123; row.id }}&quot; class=&quot;edit&quot;&gt;
+                        &lt;i class=&quot;material-icons&quot;&gt;
+                            edit
+                        &lt;/i&gt;
+                    &lt;/a&gt;
+                    &lt;a routerLink=&quot;/products/delete/&#123; &#123; row.id }}&quot; class=&quot;delete&quot;&gt;
+                        &lt;i class=&quot;material-icons&quot;&gt;
+                            delete
+                        &lt;/i&gt;
+                    &lt;/a&gt;
+                &lt;/td&gt;
+              &lt;/ng-container&gt;
+        
+              &lt;!-- &lt;tr mat-header-row *matHeaderRowDef=&quot;displayedColumns&quot;&gt;&lt;/tr&gt;
+              &lt;tr mat-row *matRowDef=&quot;let row; columns: displayedColumns;&quot;&gt;&lt;/tr&gt;
+            &lt;/table&gt; --&gt;
+              &lt;tr mat-header-row *matHeaderRowDef=&quot;displayedColumns&quot;&gt;&lt;/tr&gt;
+              &lt;tr mat-row *matRowDef=&quot;let row; columns: displayedColumns;&quot;&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+        
+            &lt;mat-paginator [pageSizeOptions]=&quot;[5, 10, 15]&quot;
+                        showFirstLastButtons 
+                        aria-label=&quot;Select page of periodic elements&quot;&gt;
+            &lt;/mat-paginator&gt;
+        &lt;/div&gt;
+        </code></pre>
+        <p>在css样式表中定义了表格大小及图标大小</p>
+        <pre><code class='language-css' lang='css'>table &#123;
+            width: 100%;
+        }
+
+        .edit &#123;
+            margin-right: 10px;
+        }
+
+        .edit &gt; i &#123;
+            color: #15a1e6;
+        }
+
+        .delete &gt; i &#123;
+            color: #e35e6b;
+        }
+        </code></pre>
+        <h3 id='252-商品信息创建'>2.5.2 商品信息创建</h3>
+        <p>在商品增删改查页面点击新建按钮，通过路由跳转到商品信息创建页面，在ts中创建函数实现对商品信息类的传递</p>
+        <pre><code class='language-typescript' lang='typescript'>import &#123; Product } from &#39;./../product.model&#39;;
+        import &#123; ProductService } from &#39;./../product.service&#39;;
+        import &#123; Component, OnInit } from &#39;@angular/core&#39;;
+        import &#123; Router } from &#39;@angular/router&#39;;
+
+        @Component(&#123;
+        selector: &#39;app-product-create&#39;,
+        templateUrl: &#39;./product-create.component.html&#39;,
+        styleUrls: [&#39;./product-create.component.css&#39;]
+        })
+        export class ProductCreateComponent implements OnInit &#123;
+
+        product: Product = &#123;
+            name: &#39;&#39;
+        }
+
+        constructor(private productService: ProductService,
+            private router: Router) &#123; }
+
+        ngOnInit(): void &#123;
+            
+        }
+
+        createProduct(): void &#123;
+            this.productService.create(this.product).subscribe(() =&gt; &#123;
+            this.productService.showMessage(&#39;新建商品信息成功!&#39;)
+            this.router.navigate([&#39;/products&#39;])
+            })
+
+        }
+
+        cancel(): void &#123;
+            this.router.navigate([&#39;/products&#39;])
+        }
+        }
+        </code></pre>
+        <p>在当前的Typescript版本，number类型不能赋值为null，所以在此之前在model中定义了价格变量可以为空。在html文件中，使用material库编写一个基本的新建页面</p>
+        <pre><code class='language-html' lang='html'>&lt;mat-card&gt;
+            &lt;mat-card-title&gt;新建&lt;/mat-card-title&gt;
+            &lt;form&gt;
+                &lt;mat-form-field&gt;
+                    &lt;input matInput placeholder=&quot;商品名称&quot; [(ngModel)]=&quot;product.name&quot; name=&quot;name&quot;&gt;
+                &lt;/mat-form-field&gt;
+                &lt;mat-form-field&gt;
+                    &lt;input matInput placeholder=&quot;价格&quot; [(ngModel)]=&quot;product.price&quot; name=&quot;price&quot;&gt;
+                &lt;/mat-form-field&gt;
+            &lt;/form&gt;
+            &lt;button mat-raised-button (click)=&quot;createProduct()&quot; color=&quot;primary&quot;&gt;
+                保存
+            &lt;/button&gt;
+
+            &lt;button mat-raised-button (click)=&quot;cancel()&quot;&gt;
+                取消
+            &lt;/button&gt;
+        &lt;/mat-card&gt;
+        </code></pre>
+        <p>在css样式表中定义填写表单的显示效果和按钮的间距</p>
+        <pre><code class='language-css' lang='css'>form &#123;
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        button &#123;
+            margin: 20px 15px 0px 0px;
+        }
+        </code></pre>
+        <h3 id='253-商品信息修改'>2.5.3 商品信息修改</h3>
+        <p>实现商品信息的修改，页面可以和上述信息创建的窗口类似，在设计时如果让需要修改的信息显示在新的窗口上，会提升用户体验。这里使用一个<code>parseInt(this.route.snapshot.paramMap.get(&#39;id&#39;)!)</code>函数获取点击修改按钮时的id值，可以参考Angular官网的英雄之旅开发项目，其中也使用了该方法。
+        </p>
+        <pre><code class='language-typescript' lang='typescript'>import &#123; Product } from &quot;./../product.model&quot;;
+        import &#123; Router, ActivatedRoute } from &quot;@angular/router&quot;;
+        import &#123; ProductService } from &quot;./../product.service&quot;;
+        import &#123; Component, OnInit } from &quot;@angular/core&quot;;
+
+        @Component(&#123;
+        selector: &quot;app-product-update&quot;,
+        templateUrl: &quot;./product-update.component.html&quot;,
+        styleUrls: [&quot;./product-update.component.css&quot;],
+        })
+        export class ProductUpdateComponent implements OnInit &#123;
+        product!: Product;
+
+        constructor(
+            private productService: ProductService,
+            private router: Router,
+            private route: ActivatedRoute
+        ) &#123;}
+
+        ngOnInit(): void &#123;
+            const id = +parseInt(this.route.snapshot.paramMap.get(&#39;id&#39;)!);
+            this.productService.readById(id).subscribe((product) =&gt; &#123;
+            this.product = product;
+            });
+        }
+
+        updateProduct(): void &#123;
+            this.productService.update(this.product).subscribe(() =&gt; &#123;
+            this.productService.showMessage(&quot;商品信息更新成功!&quot;);
+            this.router.navigate([&quot;/products&quot;]);
+            });
+        }
+
+        cancel(): void &#123;
+            this.router.navigate([&quot;/products&quot;]);
+        }
+        }
+        </code></pre>
+        <p>html和css文件参考上面商品信息创建的文件。</p>
+        <h3 id='254-商品信息删除'>2.5.4 商品信息删除</h3>
+        <p>和上述商品信息修改一样，需要获取点击删除按钮时的id值，ts、html和css文件参考上面。</p>
+        <h1 id='三遇到的问题及解决方法'>三、遇到的问题及解决方法</h1>
+        <h2 id='31-number无法赋值为null'>3.1 number无法赋值为null</h2>
+        <p>在商品信息创建页面，需要构建product的类。但是当前版本的Typescript对数据类型要求非常严格，在创建时必须为product类赋值。如果不赋值，则会报错。但是赋值后，如对price属性赋值为0，为了实现读取表单中的内容，在打开网页时会显示product类的初始值。这样就会出现不美观且操作复杂度提高的缺点。所以，在综合考虑后，最终将原本price的定义：price:
+            number修改为price?: number。</p>
+        <h2 id='32-对象可能为空'>3.2 对象可能为空</h2>
+        <p>在当前版本的TypeScript，TypeScript的语法非常严格。在出现对象为空的情况时，项目无法构建。一方面严格的语法可能会减少一些意外情况的发生，但另一方面，对于上述商品信息修改，在点击时一定会获取product类的值，但是TypeScript会报错。因为他并不知道我的操作已经在获取product类的前提下，当时获取的product类也可能是空值。所以在项目中，使用<code>！</code>来添加明确的赋值断言，即<code>product!: Product</code>。在下面的函数中，如果不使用parseInt函数，会出现number不能赋值为null的错误信息，这是由于对于后面的对象可能值为null。所以在获取id的函数外面嵌套parseInt函数来转化格式。
+        </p>
+        <h1 id='四总结'>四、总结</h1>
+        <p>通过本次Angular项目开发，使我学习了Angular项目开发的基本流程。在项目开发的初期，由于对TypeScript语言语法不熟悉，导致花费了大量的时间来学习语法和修改自己的代码。通过本次学习和开发，我学习了Angular开发的基本思想，了解了Angular框架的大致流程。
+        </p>
+    </mat-card-content>
+</mat-card>

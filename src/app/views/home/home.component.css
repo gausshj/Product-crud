@@ -7,3 +7,408 @@
 .home .subtitle {
     font-size: 1.1rem;
 }
+
+code {
+    background-color: #f3f4f4;
+    padding: 0 2px 0 2px;
+}
+
+html {
+    overflow-x: initial !important;
+}
+
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --select-text-bg-color: #B5D6FC;
+    --select-text-font-color: auto;
+    --monospace: "Lucida Console", Consolas, "Courier", monospace;
+    --title-bar-height: 20px;
+}
+
+html {
+    font-size: 14px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    height: auto;
+    inset: 0px;
+    font-size: 1rem;
+    line-height: 1.42857;
+    overflow-x: hidden;
+    background: inherit;
+    tab-size: 4;
+}
+
+a:active,
+a:hover {
+    outline: 0px;
+}
+
+::selection {
+    text-shadow: none;
+    background: var(--select-text-bg-color);
+    color: var(--select-text-font-color);
+}
+
+#write {
+    margin: 0px auto;
+    height: auto;
+    width: inherit;
+    word-break: normal;
+    overflow-wrap: break-word;
+    position: relative;
+    white-space: normal;
+    overflow-x: visible;
+    padding-top: 40px;
+}
+
+@media screen and (max-width: 500px) {
+    #write {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .CodeMirror-sizer {
+        margin-left: 0px !important;
+    }
+
+    .CodeMirror-gutters {
+        display: none !important;
+    }
+}
+
+textarea {
+    color: inherit;
+    font: inherit;
+}
+
+*,
+::after,
+::before {
+    box-sizing: border-box;
+}
+
+#write p,
+#write pre {
+    width: inherit;
+}
+
+#write p {
+    position: relative;
+}
+
+p {
+    line-height: inherit;
+}
+
+p {
+    orphans: 4;
+}
+
+p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+a {
+    cursor: pointer;
+}
+
+.CodeMirror-gutters {
+    border-right: 0px;
+    background-color: inherit;
+}
+
+.CodeMirror {
+    text-align: left;
+}
+
+.CodeMirror pre {
+    padding: 0px 4px;
+}
+
+.CodeMirror-lines {
+    padding: 0px;
+}
+
+#write pre {
+    white-space: pre-wrap;
+}
+
+#write pre.ty-contain-cm {
+    white-space: normal;
+}
+
+.CodeMirror-gutters {
+    margin-right: 4px;
+}
+
+.md-fences {
+    font-size: 0.9rem;
+    display: block;
+    break-inside: avoid;
+    text-align: left;
+    overflow: visible;
+    white-space: pre;
+    background: inherit;
+    position: relative !important;
+}
+
+.CodeMirror-line {
+    break-inside: avoid;
+}
+
+li {
+    margin: 0px;
+    position: relative;
+}
+
+li> :first-child {
+    margin-top: 0px;
+}
+
+@media print {
+
+    body,
+    html {
+        border: 1px solid transparent;
+        height: 99%;
+        break-after: avoid;
+        break-before: avoid;
+        font-variant-ligatures: no-common-ligatures;
+    }
+
+    #write {
+        margin-top: 0px;
+        padding-top: 0px;
+        border-color: transparent !important;
+    }
+}
+
+code,
+pre {
+    font-family: var(--monospace);
+}
+
+code {
+    text-align: left;
+    vertical-align: initial;
+}
+
+.CodeMirror {
+    height: auto;
+}
+
+.CodeMirror.cm-s-inner {
+    background: inherit;
+}
+
+.CodeMirror-scroll {
+    overflow: auto hidden;
+    z-index: 3;
+}
+
+.CodeMirror-gutter-filler,
+.CodeMirror-scrollbar-filler {
+    background-color: rgb(255, 255, 255);
+}
+
+.CodeMirror-gutters {
+    border-right: 1px solid rgb(221, 221, 221);
+    background: inherit;
+    white-space: nowrap;
+}
+
+.cm-s-inner .cm-builtin {
+    color: rgb(51, 0, 170);
+}
+
+.cm-s-inner .CodeMirror-activeline-background {
+    background: inherit;
+}
+
+.CodeMirror {
+    position: relative;
+    overflow: hidden;
+}
+
+.CodeMirror-scroll {
+    height: 100%;
+    outline: 0px;
+    position: relative;
+    box-sizing: content-box;
+    background: inherit;
+}
+
+.CodeMirror-sizer {
+    position: relative;
+}
+
+.CodeMirror-gutter-filler,
+.CodeMirror-scrollbar-filler {
+    position: absolute;
+    z-index: 6;
+    display: none;
+    outline: 0px;
+}
+
+.CodeMirror-scrollbar-filler {
+    right: 0px;
+    bottom: 0px;
+}
+
+.CodeMirror-gutter-filler {
+    left: 0px;
+    bottom: 0px;
+}
+
+.CodeMirror-gutters {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    padding-bottom: 10px;
+    z-index: 3;
+    overflow-y: hidden;
+}
+
+.CodeMirror-gutter-background {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    z-index: 4;
+}
+
+.CodeMirror-lines {
+    cursor: text;
+}
+
+.CodeMirror pre {
+    border-radius: 0px;
+    border-width: 0px;
+    background: 0px 0px;
+    font-family: inherit;
+    font-size: inherit;
+    margin: 0px;
+    white-space: pre;
+    overflow-wrap: normal;
+    color: inherit;
+    z-index: 2;
+    position: relative;
+    overflow: visible;
+}
+
+.CodeMirror-wrap pre {
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: normal;
+}
+
+.CodeMirror-code pre {
+    border-right: 30px solid transparent;
+    width: fit-content;
+}
+
+.CodeMirror-wrap .CodeMirror-code pre {
+    border-right: none;
+    width: auto;
+}
+
+.CodeMirror-linebackground {
+    position: absolute;
+    inset: 0px;
+    z-index: 0;
+}
+
+.CodeMirror-wrap .CodeMirror-scroll {
+    overflow-x: hidden;
+}
+
+.CodeMirror-measure {
+    position: absolute;
+    width: 100%;
+    height: 0px;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+html {
+    font-size: 19px;
+}
+
+html,
+body {
+    margin: auto;
+    background: #fefefe;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: "Vollkorn", Palatino, Times;
+    color: #333;
+    line-height: 1.4;
+    text-align: justify;
+}
+
+#write {
+    max-width: 960px;
+    margin: 0 0;
+    margin-bottom: 2em;
+    line-height: 1.53;
+    padding-top: 0px;
+}
+
+@media only screen and (min-width: 1400px) {
+    #write {
+        max-width: 1100px;
+    }
+}
+
+@media print {
+    html {
+        font-size: 13px;
+    }
+}
+
+/* Typography-------------------------------------------------------- */
+p {
+    margin-top: 0;
+    -webkit-hypens: auto;
+    -moz-hypens: auto;
+    hyphens: auto;
+}
+
+ol {
+    padding-left: 1.2em;
+}
+
+code,
+pre {
+    font-family: "Consolas", "Menlo", "Monaco", monospace, serif;
+    font-size: .9em;
+    background: white;
+}
+
+.md-fences {
+    /* margin-left: 1em; */
+    /* padding-left: 1em; */
+    border: 1px solid #ddd;
+    padding-bottom: 8px;
+    padding-top: 6px;
+    margin-bottom: 1.5em;
+}
+
+a {
+    color: #2484c1;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
